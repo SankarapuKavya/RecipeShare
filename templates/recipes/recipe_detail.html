@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ recipe.title }} - RecipeShare
+{% endblock %}
+
+{% block content %}
+
+<div class="recipe-detail-container">
+
+    <!-- RECIPE HEADER -->
+    <div class="recipe-detail-header">
+
+        <h1>{{ recipe.title }}</h1>
+
+        <p class="recipe-meta">
+            🍽️ {{ recipe.category.name }}
+            &nbsp; | &nbsp;
+            👤 {{ recipe.author.username }}
+        </p>
+
+    </div>
+
+
+    <!-- RECIPE IMAGE -->
+    {% if recipe.image %}
+
+        <div class="recipe-detail-image-container">
+            <img
+                src="{{ recipe.image.url }}"
+                alt="{{ recipe.title }}"
+                class="recipe-detail-image"
+            >
+        </div>
+
+    {% endif %}
+
+
+    <!-- ACTION BUTTONS -->
+    <div class="recipe-actions">
+
+        {% if user.is_authenticated %}
+
+            <!-- LIKE -->
+            <form method="POST"
+                  action="{% url 'like_recipe' recipe.id %}">
+                {% csrf_token %}
+
+                <button type="submit" class="action-button">
+                    {% if user_liked %}
+                        ❤️ Unlike
+                    {% else %}
+                        🤍 Like
+                    {% endif %}
+                </button>
+
+            </form>
+
+
+            <!-- SAVE -->
+            <form method="POST"
+                  action="{% url 'save_recipe' recipe.id %}">
+                {% csrf_token %}
+
+                <button type="submit" class="action-button">
+                    {% if user_saved %}
+                        🔖 Unsave
+                    {% else %}
+                        📌 Save
+                    {% endif %}
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <a href="{% url 'login' %}" class="action-button">
+                Login to Like / Save
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+    <div class="recipe-info-card">
+
+        <h2>About this Recipe</h2>
+
+        <p>
+            {{ recipe.description }}
+        </p>
+
+    </div>
+
+
+    <!-- INGREDIENTS -->
+    <div class="recipe-info-card">
+
+        <h2>🥕 Ingredients</h2>
+
+        <div class="recipe-text">
+            {{ recipe.ingredients|linebreaks }}
+        </div>
+
+    </div>
+
+
+    <!-- INSTRUCTIONS -->
+    <div class="recipe-info-card">
+
+        <h2>👩‍🍳 Instructions</h2>
+
+        <div class="recipe-text">
+            {{ recipe.instructions|linebreaks }}
+        </div>
+
+    </div>
+
+
+    <!-- AUTHOR -->
+    <div class="recipe-info-card">
+
+        <h2>👤 Recipe by</h2>
+
+        <p class="author-name">
+            {{ recipe.author.username }}
+        </p>
+
+    </div>
+
+
+    <!-- REVIEWS -->
+    <div class="reviews-section">
+
+        <h2>⭐ Reviews</h2>
+
+
+        {% if reviews %}
+
+            {% for review in reviews %}
+
+                <div class="review-card">
+
+                    <div class="review-header">
+
+                        <strong>
+                            {{ review.user.username }}
+                        </strong>
+
+                        <span>
+                            ⭐ {{ review.rating }}/5
+                        </span>
+
+                    </div>
+
+                    <p>
+                        {{ review.comment }}
+                    </p>
+
+                    <small>
+                        {{ review.created_at|date:"M d, Y" }}
+                    </small>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="no-reviews">
+                No reviews yet. Be the first to review this recipe!
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ADD REVIEW -->
+    {% if user.is_authenticated %}
+
+        {% if not user_review %}
+
+            <div class="recipe-info-card">
+
+                <h2>✍️ Add Your Review</h2>
+
+                <form method="POST"
+                      action="{% url 'add_review' recipe.id %}">
+
+                    {% csrf_token %}
+
+                    <label for="rating">
+                        Rating
+                    </label>
+
+                    <select name="rating" id="rating" required>
+
+                        <option value="">
+                            Select rating
+                        </option>
+
+                        <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                        <option value="4">⭐⭐⭐⭐ 4</option>
+                        <option value="3">⭐⭐⭐ 3</option>
+                        <option value="2">⭐⭐ 2</option>
+                        <option value="1">⭐ 1</option>
+
+                    </select>
+
+
+                    <label for="comment">
+                        Comment
+                    </label>
+
+                    <textarea
+                        name="comment"
+                        id="comment"
+                        placeholder="Write your review..."
+                        required
+                    ></textarea>
+
+
+                    <button type="submit">
+                        Submit Review
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% else %}
+
+            <div class="recipe-info-card">
+
+                <h2>Your Review</h2>
+
+                <p>
+                    ⭐ {{ user_review.rating }}/5
+                </p>
+
+                <p>
+                    {{ user_review.comment }}
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+    <!-- BACK BUTTON -->
+    <div class="back-button-container">
+
+        <a href="{% url 'recipe_list' %}"
+           class="back-button">
+            ← Back to Recipes
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

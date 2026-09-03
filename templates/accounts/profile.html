@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Profile - RecipeShare
+{% endblock %}
+
+{% block content %}
+
+<h1>👤 My Profile</h1>
+
+<hr>
+
+<h2>
+    {{ profile_user.username }}
+</h2>
+<a href="{% url 'edit_profile' %}">
+    ✏️ Edit Profile
+</a>
+<p>
+    <strong>Email:</strong>
+    {{ profile_user.email }}
+</p>
+
+<p>
+    <strong>Date Joined:</strong>
+    {{ profile_user.date_joined|date:"M d, Y" }}
+</p>
+
+<hr>
+
+<h2>📊 My Statistics</h2>
+
+<div>
+
+    <div>
+        <h3>🍲 Recipes</h3>
+
+        <p>
+            {{ recipe_count }}
+        </p>
+    </div>
+
+
+    <div>
+        <h3>🔖 Saved Recipes</h3>
+
+        <p>
+            {{ saved_count }}
+        </p>
+    </div>
+
+
+    <div>
+        <h3>⭐ Reviews</h3>
+
+        <p>
+            {{ review_count }}
+        </p>
+    </div>
+
+</div>
+
+<hr>
+
+<h2>Quick Links</h2>
+
+<p>
+    <a href="{% url 'my_recipes' %}">
+        🍲 My Recipes
+    </a>
+</p>
+
+<p>
+    <a href="{% url 'saved_recipes' %}">
+        🔖 Saved Recipes
+    </a>
+</p>
+
+<p>
+    <a href="{% url 'add_recipe' %}">
+        ➕ Add Recipe
+    </a>
+</p>
+
+<p>
+    <a href="{% url 'recipe_list' %}">
+        🍽️ Browse Recipes
+    </a>
+</p>
+
+{% endblock %}

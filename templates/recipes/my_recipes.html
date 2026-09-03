@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Recipes - RecipeShare
+{% endblock %}
+
+{% block content %}
+
+<div class="my-recipes-page">
+
+    <div class="my-recipes-header">
+        <div>
+            <h1>🍲 My Recipes</h1>
+            <p>Welcome, {{ user.username }}!</p>
+        </div>
+
+        <a href="{% url 'add_recipe' %}" class="add-recipe-button">
+            ➕ Add New Recipe
+        </a>
+    </div>
+
+    {% if recipes %}
+
+        <h2 class="my-recipes-title">
+            Your Recipes
+        </h2>
+
+        <div class="my-recipes-grid">
+
+            {% for recipe in recipes %}
+
+                <div class="my-recipe-card">
+
+                    {% if recipe.image %}
+                        <img
+                            src="{{ recipe.image.url }}"
+                            alt="{{ recipe.title }}"
+                            class="my-recipe-image"
+                        >
+                    {% else %}
+                        <div class="my-recipe-no-image">
+                            🍽️
+                            <span>No image available</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="my-recipe-content">
+
+                        <h2 class="my-recipe-name">
+                            {{ recipe.title }}
+                        </h2>
+
+                        <p class="my-recipe-description">
+                            {{ recipe.description }}
+                        </p>
+
+                        <div class="my-recipe-details">
+
+                            <p>
+                                <strong>Category:</strong>
+                                {{ recipe.category.name }}
+                            </p>
+
+                            <p>
+                                <strong>Created:</strong>
+                                {{ recipe.created_at|date:"M d, Y" }}
+                            </p>
+
+                        </div>
+
+                        <div class="my-recipe-actions">
+
+                            <a href="{% url 'recipe_detail' recipe.id %}">
+                                👁 View
+                            </a>
+
+                            <a href="{% url 'edit_recipe' recipe.id %}">
+                                ✏️ Edit
+                            </a>
+
+                            <a href="{% url 'delete_recipe' recipe.id %}">
+                                🗑️ Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-recipes">
+
+            <div class="empty-icon">
+                🍽️
+            </div>
+
+            <h2>
+                You haven't created any recipes yet.
+            </h2>
+
+            <p>
+                Share your first recipe with the RecipeShare community!
+            </p>
+
+            <a href="{% url 'add_recipe' %}" class="add-recipe-button">
+                ➕ Add Your First Recipe
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

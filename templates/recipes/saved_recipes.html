@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Saved Recipes - RecipeShare
+{% endblock %}
+
+
+{% block content %}
+
+<section class="page-section">
+
+    <div class="container">
+
+        <div class="page-header">
+
+            <h1>🔖 Saved Recipes</h1>
+
+            <p>
+                Here are the recipes you saved for later.
+            </p>
+
+        </div>
+
+
+        {% if saved_recipes %}
+
+            <div class="recipe-grid">
+
+                {% for saved in saved_recipes %}
+
+                    <div class="recipe-card">
+
+                        {% if saved.recipe.image %}
+
+                            <img
+                                src="{{ saved.recipe.image.url }}"
+                                alt="{{ saved.recipe.title }}"
+                                class="recipe-image"
+                            >
+
+                        {% endif %}
+
+
+                        <div class="recipe-card-content">
+
+                            <h2>
+
+                                <a href="{% url 'recipe_detail' saved.recipe.id %}">
+                                    {{ saved.recipe.title }}
+                                </a>
+
+                            </h2>
+
+
+                            <p class="recipe-description">
+
+                                {{ saved.recipe.description }}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>Category:</strong>
+                                {{ saved.recipe.category.name }}
+
+                            </p>
+
+
+                            <p>
+
+                                <strong>Author:</strong>
+                                {{ saved.recipe.author.username }}
+
+                            </p>
+
+
+                            <p class="saved-date">
+
+                                Saved on:
+                                {{ saved.created_at|date:"F d, Y" }}
+
+                            </p>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'save_recipe' saved.recipe.id %}"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="remove-saved-btn"
+                                >
+                                    🔖 Remove from Saved
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <h3>No saved recipes yet.</h3>
+
+                <p>
+                    You haven't saved any recipes yet.
+                </p>
+
+                <a
+                    href="{% url 'recipe_list' %}"
+                    class="primary-btn"
+                >
+                    Browse Recipes
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Recipes - RecipeShare
+{% endblock %}
+
+{% block content %}
+
+<div class="recipes-page">
+
+    <!-- PAGE HEADER -->
+    <div class="recipes-header">
+        <h1>🍲 Recipes</h1>
+        <p>Discover delicious recipes from the RecipeShare community.</p>
+    </div>
+
+
+    <!-- SEARCH + FILTER -->
+    <div class="recipe-filters">
+
+        <form method="GET" class="search-form">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search recipes..."
+                value="{{ search_query }}"
+            >
+
+            <button type="submit">
+                🔍 Search
+            </button>
+
+        </form>
+
+
+        <form method="GET" class="category-form">
+
+            <select name="category" id="category">
+
+                <option value="">
+                    All Categories
+                </option>
+
+                {% for category in categories %}
+
+                    <option
+                        value="{{ category.id }}"
+                        {% if selected_category == category.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ category.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                Filter
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- RECIPE CARDS -->
+
+    {% if recipes %}
+
+        <div class="recipe-grid">
+
+            {% for recipe in recipes %}
+
+                <article class="recipe-card">
+
+                    {% if recipe.image %}
+
+                        <img
+                            src="{{ recipe.image.url }}"
+                            alt="{{ recipe.title }}"
+                            class="recipe-card-image"
+                        >
+
+                    {% endif %}
+
+
+                    <div class="recipe-card-content">
+
+                        <h2>
+                            <a
+                                href="{% url 'recipe_detail' recipe.id %}"
+                            >
+                                {{ recipe.title }}
+                            </a>
+                        </h2>
+
+
+                        <p class="recipe-description">
+                            {{ recipe.description|truncatewords:20 }}
+                        </p>
+
+
+                        <p class="recipe-meta">
+
+                            <strong>🍽️ Category:</strong>
+                            {{ recipe.category.name }}
+
+                            <br>
+
+                            <strong>👤 Author:</strong>
+                            {{ recipe.author.username }}
+
+                        </p>
+
+
+                        <a
+                            href="{% url 'recipe_detail' recipe.id %}"
+                            class="view-recipe"
+                        >
+                            View Recipe →
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="no-recipes">
+
+            <h2>😔 No recipes found</h2>
+
+            <p>
+                Try searching for another recipe or category.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- PAGINATION -->
+
+    {% if page_obj.has_other_pages %}
+
+        <div class="pagination">
+
+            {% if page_obj.has_previous %}
+
+                <a
+                    href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                >
+                    ← Previous
+                </a>
+
+            {% endif %}
+
+
+            <span>
+                Page {{ page_obj.number }}
+                of {{ page_obj.paginator.num_pages }}
+            </span>
+
+
+            {% if page_obj.has_next %}
+
+                <a
+                    href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}"
+                >
+                    Next →
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

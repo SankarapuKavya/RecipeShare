@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Delete Recipe - RecipeShare
+{% endblock %}
+
+{% block content %}
+
+<h1>Delete Recipe</h1>
+
+<p>
+    Are you sure you want to delete:
+</p>
+
+<h2>
+    "{{ recipe.title }}"
+</h2>
+
+<p>
+    This action cannot be undone.
+</p>
+
+
+<form
+    method="POST"
+>
+
+    {% csrf_token %}
+
+    <button type="submit">
+        Yes, Delete Recipe
+    </button>
+
+    <a href="{% url 'recipe_detail' recipe.id %}">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}
